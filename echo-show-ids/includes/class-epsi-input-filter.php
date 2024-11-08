@@ -1,17 +1,15 @@
-<?php  if ( ! defined( 'ABSPATH' ) ) exit;
+<?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
  *
  * For input data:
  * 1. Sanitize data
  * 2. Based on field type, also validate data
- *
- * @copyright   Copyright (C) 2016, Zraly Studio
- * @license http://opensource.org/licenses/gpl-2.0.php GNU Public License
+ * Internal fields have spec with 'internal' => true
  */
 class EPSI_Input_Filter {
 
-	const TEXT = 'text';
+	const TEXT = 'text';                // use Text or Textarea input
 	const MULTI_SELECT = 'multi_select';
 	const MULTI_SELECT_NOT = 'multi_select_not';
 
@@ -35,7 +33,7 @@ class EPSI_Input_Filter {
 		// filter each field
 		foreach ( $input as $key => $input_value ) {
 
-			if ( empty($specification[$key]) || empty($key) || $input_value === null ) {
+			if ( ! isset( $specification[$key] ) || $input_value === null ) {
 				continue;
 			}
 
@@ -59,7 +57,7 @@ class EPSI_Input_Filter {
 				case self::MULTI_SELECT:
 				case self::MULTI_SELECT_NOT:
 
-					$input_value = is_array($input_value) ? $input_value : array();
+					$input_value = is_array( $input_value ) ? $input_value : array();
 					$input_adj = array();
 					foreach ( $input_value as $arr_key => $arr_value ) {
 

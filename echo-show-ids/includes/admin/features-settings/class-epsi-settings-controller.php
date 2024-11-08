@@ -7,7 +7,7 @@ class EPSI_Settings_Controller {
 
 	public function __construct() {
 		add_action( 'admin_post_epsi_save_settings', array( $this, 'save_settings' ) );
-		add_action( 'admin_post_nopriv_epsi_save_settings', array( $this, 'save_settings' ) );
+		add_action( 'admin_post_nopriv_epsi_save_settings', array( $this, 'user_not_logged_in' ) );
 	}
 
 	/**
@@ -22,13 +22,12 @@ class EPSI_Settings_Controller {
 
 		// ensure user has correct permissions
 		if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
-			$this->non_ajax_user_show_msg_and_die('ep_security_failed');
+			$this->non_ajax_user_show_msg_and_die( 'ep_security_failed' );
 		}
 
 		// retrieve user input
 		$field_specs = EPSI_Settings_Specs::get_fields_specification();
-		$post_data = is_array($_POST) ? $_POST : array();
-		$new_settings = $this->retrieve_form_fields( $post_data, $field_specs );
+		$new_settings = $this->retrieve_form_fields( $field_specs );
 
 		// sanitize and save settings in the database. see EPSI_Settings_DB class
 		$result = epsi_get_instance()->settings->update_settings( $new_settings );
@@ -53,32 +52,33 @@ class EPSI_Settings_Controller {
 	/**
 	 * Place form fields into an array. If field doesn't exist don't consider it.
 	 *
-	 * @param $submitted_fields
 	 * @param $all_fields_specs
 	 *
 	 * @return array of name - value pairs
 	 */
-	private function retrieve_form_fields( $submitted_fields, $all_fields_specs ) {
+	private function retrieve_form_fields( $all_fields_specs ) {
+
+		$post_data = is_array( $_POST ) ? $_POST : array();
 
 		$name_values = array();
-		foreach ($all_fields_specs as $key => $spec ) {
+		foreach ( $all_fields_specs as $key => $spec ) {
 
 			// checkboxes in a box have zero or more values
 			$is_multiselect =  $spec['type'] == EPSI_Input_Filter::MULTI_SELECT;
 			if ( $is_multiselect ||  $spec['type'] == EPSI_Input_Filter::MULTI_SELECT_NOT) {
 
 				$multi_selects = array();
-				foreach ($submitted_fields as $submitted_key => $submitted_value) {
-					if ( ! empty($submitted_key) && strpos($submitted_key, 'epsi_' . $key) === 0) {
+				foreach ( $post_data as $submitted_key => $submitted_value) {
+					if ( ! empty( $submitted_key ) && strpos( $submitted_key, 'epsi_' . $key ) === 0) {
 
 						$chunks = $is_multiselect ?  explode('[[-,-]]', $submitted_value) : explode('[[-HIDDEN-]]', $submitted_value);
-						if ( empty($chunks[0]) || empty($chunks[1]) || ! empty($chunks[2]) ) {
+						if ( empty( $chunks[0] ) || empty( $chunks[1] ) || ! empty( $chunks[2] ) ) {
 							continue;
 						}
 
 						if ( $is_multiselect ) {
 							$multi_selects[$chunks[0]] = $chunks[1];
-						} else if ( ! empty($submitted_value) && strpos($submitted_value, '[[-HIDDEN-]]') !== false ) {
+						} else if ( ! empty( $submitted_value ) && strpos( $submitted_value, '[[-HIDDEN-]]' ) !== false ) {
 
 							$multi_selects[$chunks[0]] = $chunks[1];
 						}
@@ -92,5 +92,9 @@ class EPSI_Settings_Controller {
 		}
 
 		return $name_values;
+	}
+
+	public function user_not_logged_in() {
+		wp_die( wp_json_encode( array( 'error' => true, 'message' => '<p>' . esc_html__( 'You are not logged in. Refresh your page and log in.', 'echo-show-ids' ) . '</p>', 'error_code' => 'EPSI-11' ) ) );
 	}
 }

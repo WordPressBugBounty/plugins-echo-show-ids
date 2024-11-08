@@ -32,9 +32,9 @@ class EPSI_Settings_DB {
 		$this->default_settings = EPSI_Settings_Specs::get_default_settings();
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$db_settings = $wpdb->get_var("SELECT option_value FROM $wpdb->options WHERE option_name = '" . self::EPSI_SETTINGS_NAME . "'" );
-		$db_settings = ( empty($db_settings) ) ? array() : maybe_unserialize( $db_settings );
-		$db_settings = is_array($db_settings) ? $db_settings : array();
+		$db_settings = $wpdb->get_var( "SELECT option_value FROM $wpdb->options WHERE option_name = '" . self::EPSI_SETTINGS_NAME . "'" );
+		$db_settings = empty( $db_settings ) ? array() : maybe_unserialize( $db_settings );
+		$db_settings = is_array( $db_settings ) ? $db_settings : array();
 
 		// use defaults for missing fields
 		$all_settings = wp_parse_args( $db_settings, $this->default_settings );
@@ -57,16 +57,16 @@ class EPSI_Settings_DB {
 	 * @return string with value or empty string if this settings not found
 	 */
 	public function get_value( $setting_name ) {
-		if ( empty($setting_name) ) {
+		if ( empty( $setting_name ) ) {
 			return '';
 		}
 
 		$plugin_settings = $this->get_settings();
-		if ( isset($plugin_settings[$setting_name]) ) {
+		if ( isset( $plugin_settings[$setting_name] ) ) {
 			return $plugin_settings[$setting_name];
 		}
 
-		return  isset($this->default_settings[$setting_name]) ? $this->default_settings[$setting_name] : '';
+		return isset( $this->default_settings[$setting_name] ) ? $this->default_settings[$setting_name] : '';
 	}
 
 	/**

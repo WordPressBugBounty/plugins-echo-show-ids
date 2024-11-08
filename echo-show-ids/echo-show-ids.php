@@ -3,7 +3,7 @@
  * Plugin Name: Show IDs by Echo
  * Plugin URI: http://www.echoplugins.com
  * Description: Show IDs on admin pages for posts, pages, categories, taxonomies, custom post types and more.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: Echo Plugins
  * Author URI: http://www.echoplugins.com
  * License: GNU General Public License v2.0
@@ -23,8 +23,6 @@
  *
 */
 
-/* Adapted from code in EDD (Copyright (c) 2015, Pippin Williamson) and WP. */
-
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 
@@ -38,7 +36,7 @@ final class Echo_Show_IDs {
 	/* @var Echo_Show_IDs */
 	private static $instance;
 
-	public static $version = '1.2.0';
+	public static $version = '1.3.0';
 	public static $plugin_dir;
 	public static $plugin_url;
 	public static $plugin_file = __FILE__;
@@ -62,13 +60,16 @@ final class Echo_Show_IDs {
 	 */
 	public static function instance() {
 
-		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Echo_Show_IDs ) ) {
-			self::$instance = new Echo_Show_IDs();
-
-			self::$instance->includes();
-			self::$instance->setup_system();
-			self::$instance->setup_plugin();
+		if ( ! empty( self::$instance ) && ( self::$instance instanceof Echo_Show_IDs ) ) {
+			return self::$instance;
 		}
+
+		self::$instance = new Echo_Show_IDs();
+
+		self::$instance->includes();
+		self::$instance->setup_system();
+		self::$instance->setup_plugin();
+
 		return self::$instance;
 	}
 
@@ -105,7 +106,7 @@ final class Echo_Show_IDs {
 
 			// only when on admin page - initialize hook for saving config and settings
 			// phpcs:disable WordPress.Security.NonceVerification.Recommended
-			if ( ! empty( $_REQUEST['action']) && !strncmp($_REQUEST['action'], 'epsi_', strlen('epsi_') ) ) {
+			if ( ! empty( $_REQUEST['action']) && !strncmp( $_REQUEST['action'], 'epsi_', strlen('epsi_') ) ) {
 				new EPSI_Settings_Controller();
 			}
 
@@ -146,8 +147,8 @@ epsi_get_instance();
 function epsi_add_plugin_action_links ( $links ) {
 
 	$my_links = array(
-			'Settings'  => '<a href="' . admin_url('options-general.php?page=show-ids-settings') . '">Settings</a>',
-			'Support'   => '<a href="http://www.echoplugins.com/contact-us/?inquiry-type=technical" target="_blank">Support</a>'
+			'Settings'  => '<a href="' . admin_url('options-general.php?page=show-ids-settings') . '">'. __( 'Settings' ) . '</a>',
+			'Support'   => '<a href="http://www.echoplugins.com/contact-us/?inquiry-type=technical" target="_blank">' . __( 'Support' ) . '</a>'
 	);
 
 	return array_merge( $my_links, $links );
@@ -159,7 +160,7 @@ add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'epsi_add_plugin
  */
 function epsi_add_plugin_menus() {
 
-	$feature_settings_page = add_options_page( 'Show IDs', 'Show IDs', 'manage_options', 'show-ids-settings', 'epsi_display_features_settings_page' );
+	$feature_settings_page = add_options_page( esc_html__( 'Show IDs', 'echo-show-ids' ), esc_html( 'Show IDs', 'echo-show-ids' ), 'manage_options', 'show-ids-settings', 'epsi_display_features_settings_page' );
 	if ( $feature_settings_page === false ) {
 		return;
 	}
@@ -180,7 +181,7 @@ function epsi_load_admin_pages_resources(  ) {
 
 	// if SCRIPT_DEBUG is off then use minified scripts
 	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
-	wp_enqueue_script('epsi-admin-bar-scripts', Echo_Show_IDs::$plugin_url . 'js/admin-pages' . $suffix . '.js', array('jquery', 'jquery-ui-core','jquery-ui-dialog','jquery-effects-core'), Echo_Show_IDs::$version );
+	wp_enqueue_script('epsi-admin-bar-scripts', Echo_Show_IDs::$plugin_url . 'js/admin-pages' . $suffix . '.js', array( 'jquery', 'jquery-ui-core','jquery-ui-dialog','jquery-effects-core' ), Echo_Show_IDs::$version );
 	wp_enqueue_style('epsi-admin-pages-styles', Echo_Show_IDs::$plugin_url . 'css/admin-pages' . $suffix . '.css', array(), Echo_Show_IDs::$version );
 	wp_enqueue_style( 'wp-jquery-ui-dialog' );
 }
@@ -206,20 +207,20 @@ function epsi_show_admin_notices() {
 	switch ( $admin_notice ) {
 
 		case 'ep_settings_saved' :
-			$message = esc_html__( 'Settings saved', 'epsi' );
+			$message = esc_html__( 'Settings saved', 'echo-show-ids' );
 			$type   = 'success';
 			break;
 		case 'ep_refresh_page' :
-			$message = esc_html__( 'Refresh your page', 'epsi' );
+			$message = esc_html__( 'Refresh your page', 'echo-show-ids' );
 			break;
 		case 'ep_refresh_page_error' :
-			$message = esc_html__( 'Error occurred. Please refresh your browser and try again', 'epsi' );
+			$message = esc_html__( 'Error occurred. Please refresh your browser and try again', 'echo-show-ids' );
 			break;
 		case 'ep_security_failed' :
-			$message = esc_html__( 'You do not have permission', 'epsi' );
+			$message = esc_html__( 'You do not have permission', 'echo-show-ids' );
 			break;
 		default:
-			$message = 'unknown error (133)';
+			$message = esc_html__( 'unknown error', 'echo-show-ids' ) . ' (1223)';
 			break;
 	}
 

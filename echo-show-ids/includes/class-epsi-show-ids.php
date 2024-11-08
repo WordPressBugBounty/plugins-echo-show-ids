@@ -8,8 +8,8 @@
 class EPSI_Show_IDs {
 
 	public function __construct() {
-		add_action( 'admin_init', array($this, 'add_ID_to_columns_list') );
-		add_action( 'admin_init', array($this, 'add_ID_to_action_rows') );
+		add_action( 'admin_init', array( $this, 'add_ID_to_columns_list' ) );
+		add_action( 'admin_init', array( $this, 'add_ID_to_action_rows' ) );
 	}
 
 
@@ -50,7 +50,7 @@ class EPSI_Show_IDs {
 
 		// List of Custom Taxonomies
 		foreach ( get_taxonomies( array( 'public' => true ), 'names') as $custom_taxonomy ) {
-			if ( ! empty($custom_taxonomy) ) {
+			if ( ! empty( $custom_taxonomy ) ) {
 				add_action( "manage_edit-" . $custom_taxonomy . "_columns", array( $this, 'add_column_heading' ), 99, 1 );
 				add_filter( "manage_" . $custom_taxonomy . "_custom_column", array( $this, 'add_column_value_new' ), 99, 3 );
 			}
@@ -58,7 +58,7 @@ class EPSI_Show_IDs {
 
 		// List of Custom Post Types
 		foreach (get_post_types( array( 'public' => true, '_builtin' => false), 'names') as $custom_post_type) {
-			if ( ! empty($custom_post_type) ) {
+			if ( ! empty( $custom_post_type ) ) {
 				add_action( "manage_edit-". $custom_post_type . "_columns", array( $this, 'add_column_heading' ), 99, 1) ;
 				add_filter( "manage_". $custom_post_type . "_posts_custom_column", array( $this, 'add_column_value' ), 99, 2 );
 			}
@@ -77,7 +77,7 @@ class EPSI_Show_IDs {
 	}
 
 	public function add_column_value( $column_name, $post_id ) {
-		if ( ! empty($column_name) && $column_name == 'epsi_column_id' && $this->epsi_is_option_on( 'where_to_display_ids', 'epsi-show-column' ) ) {
+		if ( ! empty( $column_name ) && $column_name == 'epsi_column_id' && $this->epsi_is_option_on( 'where_to_display_ids', 'epsi-show-column' ) ) {
 			echo $post_id;
 		}
 	}
@@ -129,11 +129,11 @@ class EPSI_Show_IDs {
 
 		if ( ! empty( $actions ) && $this->epsi_is_option_on( 'where_to_display_ids', 'epsi-show-inline' ) ) {
 
-			end($actions);
+			end( $actions );
 			$key = key($actions);
-			reset($actions);
+			reset( $actions );
 
-			$actions[$key] .=  '<span class="epsi-show-id"> | ID: ' . $id . ' </span>';
+			$actions[$key] .=  '<span class="epsi-show-id"> | ID: ' . esc_attr( $id ) . ' </span>';
 		}
 
 		return $actions;
@@ -150,11 +150,13 @@ class EPSI_Show_IDs {
 	 * @return bool
 	 */
 	private function epsi_is_option_on( $option_name, $option_value ) {
-		if ( empty(epsi_get_instance()->settings) ) {
+
+		if ( empty( epsi_get_instance()->settings ) ) {
 			return false;
 		}
+
 		$show_ids_settings = epsi_get_instance()->settings->get_value( $option_name );
 
-		return ! empty($show_ids_settings[$option_value]);
+		return ! empty( $show_ids_settings[$option_value] );
 	}
 }

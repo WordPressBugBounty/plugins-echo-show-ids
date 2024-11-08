@@ -16,7 +16,7 @@ function epsi_display_features_settings_page() {
 		<div class="epsi_admin_wrap">
 
 			<div id="epsi-top-notice-message"><a hidden id="top"></a></div>
-			<h1>Features Settings</h1>     <?php
+			<h1><?php esc_html_e( 'Welcome to Show IDs Plugin', 'echo-show-ids' ); ?></h1>     <?php
 			epsi_display_page_details( $feature_settings );    ?>
 
 		</div>
@@ -41,10 +41,13 @@ function epsi_display_page_details( $feature_settings ) {
 			<section class="main-nav">
 				<ul class="nav-tabs">
 					<li class="active">
-						<h2>Settings</h2>
+						<h2><?php _e( 'Settings' ); ?></h2>
 					</li>
 					<li>
-						<h2>Support</h2>
+						<h2><?php _e( 'Our Other Free Plugins', 'echo-show-ids' ); ?></h2>
+					</li>
+					<li>
+						<h2><?php _e( 'Support' ); ?></h2>
 					</li>
 				</ul>
 			</section>
@@ -60,17 +63,26 @@ function epsi_display_page_details( $feature_settings ) {
 						</ul>
 					</section>
 				</div>
+				<div class='tab-panel'>
+					<section>
+						<div class='epsi_row'>
+							<div class="epsi_col epsi_col_20">
+								<h3><?php esc_html_e( 'Our Other Free Plugins', 'echo-show-ids' ); ?></h3>
+								<p><?php echo esc_html__( 'Knowledge Base with articles and categories', 'echo-show-ids' ) . ': ' . '<a href="https://wordpress.org/plugins/echo-knowledge-base/" target="_blank">Echo Knowledge Base</a></p>'; ?>
+								<p><?php echo esc_html__( 'AI Chat, FAQs, Contact Form on any page', 'echo-show-ids' ) . ': ' . '<a href="https://wordpress.org/plugins/help-dialog/" target="_blank">Help Dialog</a></p>'; ?>
+								<p><?php echo esc_html__( 'Custom widgets for Elementor', 'echo-show-ids' ) . ': ' . '<a href="https://wordpress.org/plugins/creative-addons-for-elementor/" target="_blank">Creative Add-on for Elementor</a></p>'; ?>
+								<p><?php echo esc_html__( 'Scroll down on page with an arrow', 'echo-show-ids' ) . ': ' . '<a href="https://wordpress.org/plugins/scroll-down-arrow/" target="_blank">Scroll Down Arrow</a></p>'; ?>
+							</div>
+						</div>
+					</section>
+				</div>
 				<div class="tab-panel">
 					<section>
 						<div class="epsi_row">
 							<div class="epsi_col epsi_col_20">
-								<h3>Support</h3>
-								<p>If you encounter an issue or have a question, please submit your request below.</p>
-								<a class="button primary-btn" href="http://www.echoplugins.com/contact-us/?inquiry-type=technical" target="_blank">Contact us</a>
-							</div>
-							<div class="epsi_col epsi_col_20">
-								<h3>About Us</h3>
-								<p>We have other awesome plugins at <a href="https://www.echoknowledgebase.com/" target="_blank">echoknowledgebase.com</a></p>
+								<h3><?php _e( 'Support' ); ?></h3>
+								<p><?php esc_html_e( 'If you encounter an issue or have a question, please submit your request below.', 'echo-show-ids' ); ?></p>
+								<a class="button primary-btn" href="http://www.echoplugins.com/contact-us/?inquiry-type=technical" target="_blank"><?php esc_html_e( 'Contact us', 'echo-show-ids' ); ?></a>
 							</div>
 						</div>
 					</section>

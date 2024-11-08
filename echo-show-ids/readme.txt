@@ -5,8 +5,8 @@ Contributors: echoplugins
 Tags: reveal, id, post id, show id, display id
 Requires at least: 4.0
 Requires PHP: 5.5
-Tested up to: 6.6
-Stable tag: 1.2.0
+Tested up to: 6.7
+Stable tag: 1.3.0
 License: GPL2+
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,9 @@ Yes, the plugin shows IDs for all these types in the WordPress admin section.
 
 
 == Changelog ==
+
+= 1.3.0, Nov 8, 2024 =
+* Update: WordPress 6.7
 
 = 1.2.0, Jul 12, 2023 =
 * Update: WordPress 6.6

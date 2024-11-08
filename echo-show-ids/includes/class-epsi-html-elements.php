@@ -37,12 +37,7 @@ class EPSI_html_elements {
 		$autocomplete = ( $args['autocomplete'] ? 'on' : 'off' );
 		$readonly = $args['readonly'] ? ' readonly' : '';
 
-		$data = '';
-		if ( ! empty( $args['data'] ) ) {
-			foreach ( $args['data'] as $key => $value ) {
-				$data .= "data-$key=$value";
-			}
-		}
+		$data_escaped = self::get_data_escaped( $args['data'] );
 
 		$output = "<span id='{$id}-wrap'>";
 
@@ -52,11 +47,11 @@ class EPSI_html_elements {
 			$output .= '<span class="epsi-description">' . esc_html( $args['desc'] ) . '</span>';
 		}
 
-		$output .= "<input type='text' name='{$id}' id='{$id}' class='{$args['class']}' autocomplete='$autocomplete' value='" . esc_attr( $args['value'] ) .
-		           "' placeholder='" . esc_attr( $args['placeholder'] ) . "'" . $data . $readonly . " maxlength='{$args['max']}' />";
+		$output .= "<input type='text' name='" . esc_attr( $id ) . "' id='" . esc_attr( $id ) . "' class='" . esc_attr( $args['class'] ) . "' autocomplete='" . esc_attr( $autocomplete ) . "' value='" . esc_attr( $args['value'] ) .
+		           "' placeholder='" . esc_attr( $args['placeholder'] ) . "'" . $data_escaped . ' ' . esc_attr( $readonly ) . " maxlength='" . esc_attr( $args['max'] ) . "' />";
 
 		if ( ! empty( $args['info'] ) ) {
-			$output .= "<span class='epsi-info-icon'><p class='hidden'>{$args['info']}</p></span>";
+			$output .= "<span class='epsi-info-icon'><p class='hidden'>" . esc_html( $args['info'] ) . "</p></span>";
 		}
 
 		$output .= '</span>';
@@ -97,11 +92,12 @@ class EPSI_html_elements {
 		$output .= '<div class="epsi-checkboxes-vertical '.esc_attr( $args['main_class'] ).'">';
 		$output .= '<h4 class="epsi-label">'.esc_html( $args['label'] ).'</h4>';
 		if ( ! empty( $args['info'] ) ) {
-			$output .= '<span class="epsi-info-icon"><p class="hidden">' . ( is_array($args['info']) ? $args['info'][$ix] : $args['info'] ) . '</p></span>';
+			$info = is_array( $args['info'] ) ? $args['info'][$ix] : $args['info'] ;
+			$output .= '<span class="epsi-info-icon"><p class="hidden">' . esc_html( $info ) . '</p></span>';
 		}
 		$output .= '<ul>';
 
-		if ( empty($args['options']) ) {
+		if ( empty( $args['options'] ) ) {
 			$args['options'] = array();
 			$output .= $empty_list;
 		}
@@ -111,35 +107,35 @@ class EPSI_html_elements {
 			$tmp_value = is_array($args['value']) ? $args['value'] : array();
 
 			if ( $args['type'] == EPSI_Input_Filter::MULTI_SELECT_NOT ) {
-				$checked = in_array($key, array_keys($tmp_value)) ? '' : 'checked';
+				$checked = in_array( $key, array_keys( $tmp_value ) ) ? '' : 'checked';
 			} else {
-				$checked = in_array($key, array_keys($tmp_value)) ? 'checked' : '';
+				$checked = in_array( $key, array_keys( $tmp_value ) ) ? 'checked' : '';
 			}
 
-			$input_attr = array(
-				'id'    => empty($args['name']) ? '' :  ' id="' . esc_attr('epsi_' . $args['name'] ).$ix . '"',
+			$input_attr_escaped = array(
+				'id'    => empty( $args['name'] ) ? '' :  ' id="' . esc_attr( 'epsi_' . $args['name'] . $ix ) . '"',
 				'value' => ' value="'. esc_attr( $key . '[[-,-]]' . $label ) . '" ',
-				'name'  => ' name="epsi_' . esc_attr( $args['name'] ) . '_' . $ix . '" ',
+				'name'  => ' name="epsi_' . esc_attr( $args['name'] ) . '_' . esc_attr( $ix ) . '" ',
 				'class' => ' class="' . esc_attr( $args['class'] ).'" ',
-				'checked' => $checked
+				'checked' => esc_attr( $checked )
 			);
 
-			$label = str_replace(',', '', $label);
+			$label = str_replace( ',', '', $label );
 
 			$output .= '<li>';
 			if ( $args['type'] == EPSI_Input_Filter::MULTI_SELECT_NOT ) {
-				$output .= '<input type="hidden" value="'. esc_attr( $key . '[[-HIDDEN-]]' . $label ) . '" name="epsi_' . esc_attr( $args['name'] ) . '_' . $ix . '">';
+				$output .= '<input type="hidden" value="'. esc_attr( $key . '[[-HIDDEN-]]' . $label ) . '" name="epsi_' . esc_attr( $args['name'] ) . '_' . esc_attr( $ix ) . '">';
 			}
 			$output .= '<input type="checkbox"';
-			$output .= $input_attr[ 'id' ];
-			$output .= $input_attr[ 'class' ];
-			$output .= $input_attr[ 'name' ];
-			$output .= $input_attr[ 'value' ];
-			$output .= $input_attr[ 'checked' ];
+			$output .= $input_attr_escaped[ 'id' ];
+			$output .= $input_attr_escaped[ 'class' ];
+			$output .= $input_attr_escaped[ 'name' ];
+			$output .= $input_attr_escaped[ 'value' ];
+			$output .= $input_attr_escaped[ 'checked' ];
 			$output .= ' />';
 
 			$output .= '<label';
-			$output .= ' for="epsi_'.  esc_attr( $args['name'] ).$ix.'" >';
+			$output .= ' for="epsi_'.  esc_attr( $args['name'] . $ix ) . '" >';
 			$output .= esc_html( $label );
 			$output .= '</label>';
 			$output .= '</li>';
@@ -160,7 +156,27 @@ class EPSI_html_elements {
 		<div class="submit">
 			<input type="hidden" id="_wpnonce_epsi_save_settings" name="_wpnonce_epsi_save_settings" value="<?php echo wp_create_nonce( '_wpnonce_epsi_save_settings' ); ?>"/>
 			<input type="hidden" name="action" value="epsi_save_settings"/>
-			<input type="submit" class="primary-btn" value="<?php esc_html_e( 'Save', 'epsi' ); ?>" />
+			<input type="submit" class="primary-btn" value="<?php esc_html_e( 'Save', 'echo-show-ids' ); ?>" />
 		</div>  <?php
+	}
+
+	/**
+	 * Return data attributes with escaped keys and values
+	 *
+	 * @param $data
+	 * @return string
+	 */
+	public static function get_data_escaped( $data ) {
+		$data_escaped = '';
+
+		if ( empty( $data ) ) {
+			return $data_escaped;
+		}
+
+		foreach ( $data as $key => $value ) {
+			$data_escaped .= 'data-' . esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
+		}
+
+		return $data_escaped;
 	}
 }
