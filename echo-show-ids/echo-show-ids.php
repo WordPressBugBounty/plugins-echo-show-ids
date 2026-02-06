@@ -3,7 +3,7 @@
  * Plugin Name: Show IDs by Echo
  * Plugin URI: http://www.echoplugins.com
  * Description: Show IDs on admin pages for posts, pages, categories, taxonomies, custom post types and more.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Echo Plugins
  * Author URI: http://www.echoplugins.com
  * License: GNU General Public License v2.0
@@ -36,7 +36,7 @@ final class Echo_Show_IDs {
 	/* @var Echo_Show_IDs */
 	private static $instance;
 
-	public static $version = '1.3.1';
+	public static $version = '1.3.2';
 	public static $plugin_dir;
 	public static $plugin_url;
 	public static $plugin_file = __FILE__;
