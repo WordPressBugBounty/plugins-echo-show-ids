@@ -82,7 +82,7 @@ function epsi_display_page_details( $feature_settings ) {
 							<div class="epsi_col epsi_col_20">
 								<h3><?php _e( 'Support' ); ?></h3>
 								<p><?php esc_html_e( 'If you encounter an issue or have a question, please submit your request below.', 'echo-show-ids' ); ?></p>
-								<a class="button primary-btn" href="http://www.echoplugins.com/contact-us/?inquiry-type=technical" target="_blank"><?php esc_html_e( 'Contact us', 'echo-show-ids' ); ?></a>
+								<a class="button primary-btn" href="https://www.echoknowledgebase.com/contact-us/" target="_blank"><?php esc_html_e( 'Contact us', 'echo-show-ids' ); ?></a>
 							</div>
 						</div>
 					</section>
